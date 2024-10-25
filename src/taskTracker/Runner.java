@@ -8,10 +8,13 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Runner {
+    private static Object sc;
     // List to hold tasks
     private ArrayList<Task> tasks = new ArrayList<>();
+    private int taskCounter = 1;
     // Method to add a task to the list
-    public void addTask(Task task) {
+    public void addTask(String description) {
+        Task task = new Task(taskCounter++, description, Status.TO_DO, LocalDateTime.now());
         tasks.add(task);
     }
     //Method to list tasks in the ArrayList
@@ -52,11 +55,12 @@ public class Runner {
         Runner taskManager = new Runner(); // Create an instance of Runner
 
         System.out.println("Welcome to the taskTracker.");
-        System.out.println("\nChoose an option: \n1. Create New Task\n2. Update Task\n3. Delete Task\n4. Exit");
-
-        Scanner sc = new Scanner(System.in);
+        
 
         while (true) {
+            System.out.println("\nChoose an option: \n1. Create New Task\n2. Update Task\n3. Delete Task\n4. Exit");
+
+            Scanner sc = new Scanner(System.in);
             switch (sc.nextInt()) {
                 case 1:
                     System.out.print("Enter task ID: ");
@@ -65,7 +69,7 @@ public class Runner {
                     System.out.print("Enter task description: ");
                     String description = sc.nextLine();
 
-                    taskManager.addTask(new Task(id, description, Status.TO_DO, LocalDateTime.now()));
+                    taskManager.addTask(description);
                     taskManager.writeToFile();
                     break;
 
