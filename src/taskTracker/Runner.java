@@ -10,12 +10,21 @@ import java.util.Scanner;
 public class Runner {
     // List to hold tasks
     private ArrayList<Task> tasks = new ArrayList<>();
-
     // Method to add a task to the list
     public void addTask(Task task) {
         tasks.add(task);
     }
-
+    //Method to list tasks in the ArrayList
+    public void listTasks() {
+        for (Task task : tasks) {
+            System.out.println("ID: " + task.getId());
+            System.out.println("Description: " + task.getDescription());
+            System.out.println("Status: " + task.getStatus());
+            System.out.println("Created At: " + task.getCreatedAt());
+            System.out.println("Updated At: " + task.getUpdatedAt());
+            System.out.println("-------------------");
+        }
+    }
     // Method to write the tasks to a file in JSON format
     public void writeToFile() {
         StringBuilder json = new StringBuilder("[");
@@ -38,8 +47,7 @@ public class Runner {
             System.err.println("Error writing to file: " + e.getMessage());
         }
     }
-
-    // Main method to interact with the user
+    // Main method to interact with the user and run the program
     public static void main(String[] args) {
         Runner taskManager = new Runner(); // Create an instance of Runner
 
@@ -53,23 +61,83 @@ public class Runner {
                 case 1:
                     System.out.print("Enter task ID: ");
                     int id = sc.nextInt();
-                    sc.nextLine();  // Consume the newline left-over
+                    sc.nextLine();
                     System.out.print("Enter task description: ");
                     String description = sc.nextLine();
 
-                    // Create a new task and add it
                     taskManager.addTask(new Task(id, description, Status.TO_DO, LocalDateTime.now()));
-
-                    // Write tasks to the file
                     taskManager.writeToFile();
                     break;
 
                 case 2:
-                    System.out.println("Feature to update a task will be implemented.");
+                    taskManager.listTasks();
+                    System.out.println("Enter the ID of the task you want to update:");
+                    int updateId = sc.nextInt();
+
+                    Task taskToUpdate = null;
+                    for (Task task : taskManager.tasks) {
+                        if (task.getId() == updateId) {
+                            taskToUpdate = task;
+                            break;
+                        }
+                    }
+
+                    if (taskToUpdate == null) {
+                        System.out.println("Task with ID " + updateId + " not found.");
+                        break;
+                    }
+
+                    System.out.println("What would you like to update?");
+                    System.out.println("1. Description\n2. Status\n3. Both");
+                    int updateOption = sc.nextInt();
+                    sc.nextLine();
+
+                    if (updateOption == 1 || updateOption == 3) {
+                        System.out.print("Enter new description: ");
+                        String newDescription = sc.nextLine();
+                        taskToUpdate.setDescription(newDescription);
+                    }
+
+                    if (updateOption == 2 || updateOption == 3) {
+                        System.out.println("Select new status: 1. TO_DO, 2. IN_PROGRESS, 3. DONE");
+                        int statusChoice = sc.nextInt();
+                        switch (statusChoice) {
+                            case 1:
+                                taskToUpdate.setStatus(Status.TO_DO);
+                                break;
+                            case 2:
+                                taskToUpdate.setStatus(Status.IN_PROGRESS);
+                                break;
+                            case 3:
+                                taskToUpdate.setStatus(Status.DONE);
+                                break;
+                            default:
+                                System.out.println("Invalid status choice.");
+                                break;
+                        }
+                    }
                     break;
 
                 case 3:
-                    System.out.println("Feature to delete a task will be implemented.");
+                    taskManager.listTasks();
+                    System.out.print("Enter the ID of the task you want to delete: ");
+                    int deleteId = sc.nextInt();
+
+                    Task taskToDelete = null;
+                    for (Task task : taskManager.tasks) {
+                        if (task.getId() == deleteId) {
+                            taskToDelete = task;
+                            break;
+                        }
+                    }
+
+                    if (taskToDelete != null) {
+                        taskManager.tasks.remove(taskToDelete);
+                        System.out.println("Task with ID " + deleteId + " deleted successfully.");
+                        taskManager.writeToFile();
+                    } else {
+                        System.out.println("Task with ID " + deleteId + " not found.");
+                    }
                     break;
 
                 case 4:
