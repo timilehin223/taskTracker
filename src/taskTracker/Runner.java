@@ -1,6 +1,5 @@
 package taskTracker;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -9,15 +8,14 @@ import java.util.Scanner;
 
 public class Runner {
     private static Object sc;
-    // List to hold tasks
     private ArrayList<Task> tasks = new ArrayList<>();
     private int taskCounter = 1;
-    // Method to add a task to the list
+
     public void addTask(String description) {
         Task task = new Task(taskCounter++, description, Status.TO_DO, LocalDateTime.now());
         tasks.add(task);
     }
-    //Method to list tasks in the ArrayList
+
     public void listTasks() {
         for (Task task : tasks) {
             System.out.println("ID: " + task.getId());
